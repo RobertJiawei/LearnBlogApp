@@ -5,6 +5,7 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
+      index: true,
       unique: true,
     },
     email: {
@@ -17,7 +18,7 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timeseries: true }
+  { timestamps: true }
 );
 
 const User = mongoose.model("User", userSchema);
