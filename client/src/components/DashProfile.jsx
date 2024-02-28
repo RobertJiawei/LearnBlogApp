@@ -22,18 +22,19 @@ import {
   signOutSuccess,
 } from "../redux/user/userSlice";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 const DashProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser, loading } = useSelector((state) => state.user);
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const filePickerRef = useRef();
   const [formData, setFormData] = useState({});
   const [userUpdateSuccess, setUserUpdateSuccess] = useState(null);
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state.user);
   const [userUpdateError, setUserUpdateError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
@@ -55,6 +56,7 @@ const DashProfile = () => {
 
   const uploadImage = () => {
     setImageUploadError(null);
+    setImageUploadLoading(true);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
     const storageRef = ref(storage, fileName);
@@ -71,11 +73,13 @@ const DashProfile = () => {
         setImageUploadError(
           "Could not upload image (File must be less than 2MB)"
         );
+        setImageUploadLoading(false);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
           setFormData({ ...formData, profilePicture: downloadURL });
+          setImageUploadLoading(false);
         });
       }
     );
@@ -218,6 +222,7 @@ const DashProfile = () => {
           type="submit"
           className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
           outline
+          disabled={loading || imageUploadLoading}
         >
           {loading ? (
             <>
@@ -228,6 +233,17 @@ const DashProfile = () => {
             "Update"
           )}
         </Button>
+        {currentUser.isAdmin && (
+          <Link to={"/create-post"}>
+            <Button
+              type="button"
+              className="bg-gradient-to-r from-red-500 via-yellow-500 to-green-500 w-full"
+              outline
+            >
+              Create A Post
+            </Button>
+          </Link>
+        )}
       </form>
       <div className=" text-red-500 flex justify-between mt-5">
         <span className=" cursor-pointer" onClick={() => setShowModal(true)}>
