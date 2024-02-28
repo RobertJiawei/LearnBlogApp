@@ -2,10 +2,6 @@ import User from "../models/user.model.js";
 import { errorHandler } from "../utils/error.js";
 import bcryptjs from "bcryptjs";
 
-export const test = (req, res) => {
-  res.json({ message: "user api is working" });
-};
-
 export const updateUser = async (req, res, next) => {
   if (req.user.id !== req.params.userId) {
     return next(errorHandler(403), "You are not allowed to update this user");
@@ -33,7 +29,7 @@ export const updateUser = async (req, res, next) => {
   }
 
   try {
-    const updateUser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.userId,
       {
         $set: {
@@ -46,8 +42,21 @@ export const updateUser = async (req, res, next) => {
       { new: true }
     );
 
-    const { password, ...rest } = updateUser._doc;
+    const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  if (req.user.id !== req.params.userId) {
+    return next(errorHandler(403), "You are not allowed to delete this user");
+  }
+
+  try {
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json({ message: "User deleted" });
   } catch (error) {
     next(error);
   }
