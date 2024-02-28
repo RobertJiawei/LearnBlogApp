@@ -104,7 +104,7 @@ const DashProfile = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await res.json(res);
+      const data = await res.json();
       if (data.success === false) {
         dispatch(updateFailure(data.message));
         setUserUpdateError(data.message);
