@@ -9,3 +9,44 @@ body {
 .ql-editor {
   font-size: 1.2rem;
 }
+
+.post-content p {
+  margin-bottom: 0.5rem;
+}
+
+.post-content h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: sans-serif;
+  margin: 1.5rem 0;
+}
+
+.post-content h2 {
+  font-size: 1.4rem;
+  font-family: sans-serif;
+  margin: 1.5rem 0;
+}
+
+.post-content a {
+  color: rgb(80, 136, 166);
+  text-decoration: none;
+}
+
+.post-content a:hover {
+  text-decoration: underline;
+}
+
+.dark .post-content a {
+  color: rgb(191, 80, 49);
+}
+
+.post-content pre {
+  background-color: #1e293b;
+  border-radius: 0.5rem;
+  padding: 4px 10px;
+  border: 1px solid rgb(61, 69, 83);
+}
+
+.light .post-content pre {
+  color: #e8e7e7;
+}
