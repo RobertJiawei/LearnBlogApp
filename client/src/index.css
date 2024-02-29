@@ -50,3 +50,7 @@ body {
 .light .post-content pre {
   color: #e8e7e7;
 }
+
+.post-content code {
+  background-color: #f4f4f4;
+}
