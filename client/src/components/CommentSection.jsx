@@ -1,16 +1,19 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Alert, Button, Textarea } from "flowbite-react";
+import { Alert, Button, Textarea, Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 const CommentSection = ({ postId }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [comment, setComment] = useState("");
   const [commentError, setCommentError] = useState(null);
   const [comments, setComments] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -31,7 +34,7 @@ const CommentSection = ({ postId }) => {
           userId: currentUser._id,
         }),
       });
-      const data = res.json();
+      const data = await res.json();
       if (res.ok) {
         setComment("");
         setCommentError(null);
@@ -78,6 +81,25 @@ const CommentSection = ({ postId }) => {
       }
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  const handleDelete = async (commentId) => {
+    try {
+      if (!currentUser) {
+        navigate("/sign-in");
+        return;
+      }
+      const res = await fetch(`/api/comment/delete-comment/${commentId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setComments(comments.filter((comment) => comment._id !== commentId));
+        setShowModal(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -147,13 +169,44 @@ const CommentSection = ({ postId }) => {
               key={comment._id}
               comment={comment}
               onLike={handleLike}
-              update={handleUpdate}
+              onUpdate={handleUpdate}
+              onDelete={() => {
+                setShowModal(true);
+                setCommentToDelete(comment._id);
+              }}
             />
           ))}
         </>
       ) : (
         <p className="text-sm my-5">No comments yet.</p>
       )}
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size="md"
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className="text-center">
+            <HiOutlineExclamationCircle className="size-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto" />
+            <h3 className="mb-5 text-lg text-gray-500 dark:text-gray-400">
+              Are you sure you want to delete this post?
+            </h3>
+            <div className="flex justify-center gap-6">
+              <Button
+                color="failure"
+                onClick={() => handleDelete(commentToDelete)}
+              >
+                Yes, I'm sure
+              </Button>
+              <Button color="gray" onClick={() => setShowModal(false)}>
+                No, cancel
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

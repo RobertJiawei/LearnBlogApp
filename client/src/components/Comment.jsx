@@ -5,11 +5,12 @@ import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Button, Textarea } from "flowbite-react";
 
-const Comment = ({ comment, onLike, update }) => {
+const Comment = ({ comment, onLike, onUpdate, onDelete }) => {
   const [user, setUser] = useState({});
   const { currentUser } = useSelector((state) => state.user);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState("");
+
   useEffect(() => {
     const getUser = async () => {
       try {
@@ -19,7 +20,7 @@ const Comment = ({ comment, onLike, update }) => {
           setUser(data);
         }
       } catch (error) {
-        console.log(error);
+        console.log(error.message);
       }
     };
     getUser();
@@ -43,7 +44,7 @@ const Comment = ({ comment, onLike, update }) => {
       });
       if (res.ok) {
         setIsEditing(false);
-        update(comment, editedContent);
+        onUpdate(comment, editedContent);
       }
     } catch (error) {
       console.log(error);
@@ -103,9 +104,7 @@ const Comment = ({ comment, onLike, update }) => {
             <div className="flex items-center pt-2 text-xs border-t dark:border-gray-700 max-w-fit gap-2">
               <button
                 className={`text-gray-400 hover:text-blue-500 ${
-                  currentUser &&
-                  comment.likes.includes(currentUser._id) &&
-                  "!text-blue-500"
+                  currentUser && "!text-blue-500"
                 }`}
                 type="button"
                 onClick={() => onLike(comment._id)}
@@ -120,13 +119,22 @@ const Comment = ({ comment, onLike, update }) => {
               </p>
               {currentUser &&
                 (currentUser._id === comment.userId || currentUser.isAdmin) && (
-                  <button
-                    type="button"
-                    className=" text-gray-500 hover:text-blue-500"
-                    onClick={handleEdit}
-                  >
-                    Edit
-                  </button>
+                  <>
+                    <button
+                      type="button"
+                      className=" text-gray-500 hover:text-blue-500"
+                      onClick={handleEdit}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className=" text-gray-500 hover:text-red-500"
+                      onClick={() => onDelete()}
+                    >
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </>
