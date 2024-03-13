@@ -33,10 +33,10 @@ const Header = () => {
         to="/"
         className=" self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
-        <span className=" px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
+        <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
           Jiawei
         </span>
-        Blog
+        <span className=" pl-1">Blog</span>
       </Link>
       <form>
         <TextInput
@@ -79,7 +79,7 @@ const Header = () => {
             <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
           </Dropdown>
         ) : (
-          <Link>
+          <Link to={"/sign-in"}>
             <Button className=" bg-gradient-to-br from-red-400 via-purple-400 to-blue-500">
               Sign In
             </Button>
