@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    timeout-minutes: 5
     runs-on: self-hosted
 
     strategy:
@@ -26,4 +27,7 @@ jobs:
       - run: |
           touch .env
           echo "${{ secrets.ENV_FILE }}" > .env
-      - run: npm run build --if-present
+      - run: |
+          npm install
+          npm install --prefix client
+          npm run build --prefix client
