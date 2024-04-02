@@ -9,8 +9,8 @@ on:
 
 jobs:
   build:
-    timeout-minutes: 5
     runs-on: self-hosted
+    timeout-minutes: 5
 
     strategy:
       matrix:
@@ -29,5 +29,6 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > .env
       - run: |
           npm install
-          npm install --prefix client
-          npm run build --prefix client
+          cd client
+          npm install --production
+          npm run build
